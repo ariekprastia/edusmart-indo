@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduSmart Indonesia - Platform Ujian & Pembelajaran Online Nasional</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-dark: #172554;
+            --accent: #2563eb;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --radius: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 1.25rem 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        header .user-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.05);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        input[type="text"], input[type="password"], select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+            background: #fff;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #15803d; }
+        .btn-secondary { background: var(--secondary); }
+        .btn-secondary:hover { background: #475569; }
+
+        .flex-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .flex-col {
+            flex: 1;
+        }
+
+        /* Quiz UI */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--accent);
+        }
+
+        .timer {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--danger);
+            background: #fee2e2;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+        }
+
+        .question-box {
+            margin-bottom: 2rem;
+        }
+
+        .question-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .question-img-wrapper {
+            background: #f8fafc;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .question-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 260px;
+            border-radius: 6px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+            background: #fff;
+            padding: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .option-item:hover {
+            background: #f8fafc;
+            border-color: var(--accent);
+        }
+
+        .option-item input {
+            margin-right: 1rem;
+            transform: scale(1.2);
+        }
+
+        .palette-btn {
+            padding: 0.5rem 0.75rem;
+            font-weight: bold;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            min-width: 38px;
+        }
+
+        .palette-btn.answered {
+            background: #bbf7d0;
+            border-color: #86efac;
+            color: #166534;
+        }
+
+        .palette-btn.current {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.3);
+            background: #eff6ff;
+        }
+
+        .explanation-card {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 1.25rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .explanation-card.incorrect {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid #e2e8f0;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎓 EduSmart Indonesia</h1>
+        <div id="headerUserBadge" class="user-badge hidden">Peserta: <span id="displayName"></span></div>
+    </header>
+
+    <div class="container">
+
+        <!-- STEP 1: LOGIN & SETUP -->
+        <div id="viewSetup" class="card">
+            <h2>Konfigurasi Sesi Ujian & Pembelajaran</h2>
+            <div class="form-group">
+                <label for="inputNama">Nama Lengkap Peserta Didik (Wajib Diisi):</label>
+                <input type="text" id="inputNama" placeholder="Contoh: Budi Santoso" required>
+                <small id="namaError" style="color: var(--danger); display: none;">Nama peserta wajib diisi sebelum memulai!</small>
+            </div>
+
+            <div class="flex-row">
+                <div class="form-group flex-col">
+                    <label for="selectJenjang">Jenjang Pendidikan:</label>
+                    <select id="selectJenjang" onchange="updateKurikulumDanMapel()">
+                        <option value="SD">SD (Sekolah Dasar)</option>
+                        <option value="SMP">SMP (Sekolah Menengah Pertama)</option>
+                        <option value="SMA">SMA (Sekolah Menengah Atas)</option>
+                        <option value="SMK">SMK (Sekolah Menengah Kejuruan)</option>
+                    </select>
+                </div>
+                <div class="form-group flex-col">
+                    <label for="selectKurikulum">Pilihan Kurikulum:</label>
+                    <select id="selectKurikulum">
+                        <option value="Kurikulum Merdeka">Kurikulum Merdeka (Terbaru)</option>
+                        <option value="Kurikulum 2013 (K-13)">Kurikulum 2013 (K-13 Revisi)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="selectMapel">Mata Pelajaran:</label>
+                <select id="selectMapel">
+                    <!-- Dynamic populated -->
+                </select>
+            </div>
+
+            <div class="flex-row">
+                <div class="form-group flex-col">
+                    <label for="selectMetode">Metode Pembelajaran / Sesi:</label>
+                    <select id="selectMetode">
+                        <option value="latihan">Simulasi Latihan Mandiri (Tanpa Timer, Bebas Pembahasan)</option>
+                        <option value="ujian">Simulasi Ujian Resmi (Dengan Timer Hitung Mundur)</option>
+                    </select>
+                </div>
+                <!-- DURASI HANYA MUNCUL KETIKA PILIH UJIAN RESMI -->
+                <div class="form-group flex-col hidden" id="wrapperDurasi">
+                    <label for="inputDurasi">Durasi Waktu Ujian (Menit):</label>
+                    <input type="text" id="inputDurasi" value="30">
+                </div>
+            </div>
+
+            <div class="flex-row">
+                <div class="form-group flex-col">
+                    <label for="inputJumlahSoal">Jumlah Soal:</label>
+                    <input type="text" id="inputJumlahSoal" value="5">
+                </div>
+                <div class="form-group flex-col">
+                    <label for="selectKesulitan">Tingkat Kesulitan Soal:</label>
+                    <select id="selectKesulitan">
+                        <option value="mudah">Mudah</option>
+                        <option value="sedang" selected>Sedang</option>
+                        <option value="sulit">Sulit</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-top: 1rem;">
+                <button class="btn btn-success" onclick="mulaiSesi()">🚀 Mulai Sesi Pembelajaran / Ujian</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: QUIZ / EXAM INTERFACE -->
+        <div id="viewQuiz" class="card hidden">
+            <div class="quiz-header">
+                <div>
+                    <h3 id="quizTitle" style="color: var(--primary);"></h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Jenjang: <span id="infoJenjang"></span> | Kurikulum: <span id="infoKurikulum"></span> | Kesulitan: <span id="infoKesulitan"></span></p>
+                </div>
+                <div id="timerBox" class="timer hidden">⏱️ <span id="countdown">00:30</span></div>
+            </div>
+
+            <div class="question-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                    <span id="questionCounter" style="font-weight: bold; color: var(--accent);">Soal ke-1 dari 5</span>
+                    <span id="badgeKesulitan" style="background: #e2e8f0; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">Sedang</span>
+                </div>
+
+                <!-- Ilustrasi Gambar Soal (Responsive SVG dengan Visual Kontras Tinggi) -->
+                <div id="imageContainer" class="question-img-wrapper">
+                    <img id="questionImage" class="question-img" src="" alt="Ilustrasi Gambar Soal">
+                    <p id="imageCaption" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; font-style: italic;"></p>
+                </div>
+
+                <div id="questionText" class="question-title"></div>
+
+                <div class="options-list" id="optionsList">
+                    <!-- Dynamic Options -->
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 1rem; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-secondary" id="btnPrev" onclick="navigasiSoal(-1)" style="width: auto;">⬅️ Sebelumnya</button>
+                <div id="paletteMiniContainer" style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: center;"></div>
+                <button class="btn" id="btnNext" onclick="navigasiSoal(1)" style="width: auto;">Selanjutnya ➡️</button>
+            </div>
+        </div>
+
+        <!-- STEP 3: RESULT & DISCUSSION -->
+        <div id="viewResult" class="card hidden">
+            <h2 style="text-align: center;">📊 Hasil Sesi & Pembahasan Soal</h2>
+            
+            <div style="background: #f8fafc; border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; text-align: center; margin-bottom: 2rem;">
+                <h3 id="resNama" style="color: var(--primary); margin-bottom: 0.5rem;"></h3>
+                <p id="resInfo" style="color: var(--text-muted); margin-bottom: 1rem;"></p>
+                <div style="font-size: 3rem; font-weight: bold; color: var(--success); margin-bottom: 0.5rem;" id="resScore">100</div>
+                <p id="resStatus" style="font-weight: 600; font-size: 1.1rem;"></p>
+            </div>
+
+            <h3 style="margin-bottom: 1rem;">Review & Penjelasan Jawaban (Termasuk Koreksi Soal yang Salah):</h3>
+            <div id="reviewContainer">
+                <!-- Dynamic Review -->
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn btn-success" onclick="kembaliKeMenuUtama()" style="max-width: 300px; margin: 0 auto;">🔄 Selesai & Kembali ke Menu Utama</button>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 EduSmart Indonesia. Platform Ujian Online Terintegrasi SD, SMP, SMA, & SMK.</p>
+    </footer>
+
+    <script>
+        // URL Web App Google Apps Script (Opsional jika ingin merekap riwayat ke spreadsheet)
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxqUKiPVyNKKVC-_Nw0__5j2RJrZQu8B9uyokd58qkVnIRhzxzcER37JvXlY7bp-jcIIA/exec";
+
+        // Database Kurikulum & Mata Pelajaran Lengkap Indonesia
+        const dbMapel = {
+            "SD": {
+                "Kurikulum Merdeka": [
+                    "Pendidikan Agama dan Budi Pekerti", "Pendidikan Pancasila", "Bahasa Indonesia",
+                    "Matematika", "Ilmu Pengetahuan Alam dan Sosial (IPAS)", "Seni Budaya",
+                    "Pendidikan Jasmani, Olahraga, dan Kesehatan (PJOK)", "Bahasa Inggris (Muatan Lokal)"
+                ],
+                "Kurikulum 2013 (K-13)": [
+                    "Pendidikan Agama dan Budi Pekerti", "PPKn", "Bahasa Indonesia",
+                    "Matematika", "Ilmu Pengetahuan Alam (IPA)", "Ilmu Pengetahuan Sosial (IPS)",
+                    "Seni Budaya dan Prakarya (SBdP)", "PJOK"
+                ]
+            },
+            "SMP": {
+                "Kurikulum Merdeka": [
+                    "Pendidikan Agama dan Budi Pekerti", "Pendidikan Pancasila", "Bahasa Indonesia",
+                    "Matematika", "Ilmu Pengetahuan Alam (IPA)", "Ilmu Pengetahuan Sosial (IPS)",
+                    "Bahasa Inggris", "Informatika", "Seni dan Prakarya", "PJOK"
+                ],
+                "Kurikulum 2013 (K-13)": [
+                    "Pendidikan Agama dan Budi Pekerti", "PPKn", "Bahasa Indonesia",
+                    "Matematika", "IPA", "IPS", "Bahasa Inggris", "Seni Budaya", "Prakarya", "PJOK"
+                ]
+            },
+            "SMA": {
+                "Kurikulum Merdeka": [
+                    "Pendidikan Agama dan Budi Pekerti", "Pendidikan Pancasila", "Bahasa Indonesia",
+                    "Matematika (Umum/Lanjut)", "Bahasa Inggris", "Fisika", "Kimia", "Biologi",
+                    "Ekonomi", "Sosiologi", "Sejarah", "Geografi", "Informatika", "PJOK"
+                ],
+                "Kurikulum 2013 (K-13)": [
+                    "Pendidikan Agama dan Budi Pekerti", "PPKn", "Bahasa Indonesia", "Matematika",
+                    "Sejarah Indonesia", "Bahasa Inggris", "Matematika Peminatan", "Fisika", "Kimia",
+                    "Biologi", "Ekonomi", "Sosiologi", "Geografi", "Lintas Minat"
+                ]
+            },
+            "SMK": {
+                "Kurikulum Merdeka": [
+                    "Pendidikan Agama dan Budi Pekerti", "Pendidikan Pancasila", "Bahasa Indonesia",
+                    "Matematika Kejuruan", "Bahasa Inggris", "Informatika", "Projek IPAS",
+                    "Kejuruan Teknik / Bisnis / Pariwisata", "Sejarah", "Seni Budaya", "PJOK"
+                ],
+                "Kurikulum 2013 (K-13)": [
+                    "Pendidikan Agama dan Budi Pekerti", "PPKn", "Bahasa Indonesia", "Matematika",
+                    "Sejarah Indonesia", "Bahasa Inggris", "Seni Budaya", "PJOK",
+                    "Simulasi dan Komunikasi Digital", "Fisika / Kimia Terapan", "Dasar Program Kejuruan"
+                ]
+            }
+        };
+
+        // State Aplikasi
+        let state = {
+            nama: "",
+            jenjang: "SD",
+            kurikulum: "",
+            mapel: "",
+            metode: "latihan",
+            durasi: 30,
+            jumlahSoal: 5,
+            kesulitan: "sedang",
+            currentSoalIndex: 0,
+            soalList: [],
+            jawabanUser: {},
+            timerInterval: null,
+            sisaWaktu: 0,
+            sesiSudahGenerate: false
+        };
+
+        window.onload = function() {
+            updateKurikulumDanMapel();
+            // Inisialisasi tampilan durasi awal (default latihan -> tersembunyi)
+            document.getElementById("wrapperDurasi").classList.add("hidden");
+        };
+
+        // Event listener untuk metode pembelajaran (Sembunyikan/Tampilkan durasi waktu)
+        document.getElementById("selectMetode").addEventListener("change", function() {
+            const wrapperDurasi = document.getElementById("wrapperDurasi");
+            if (this.value === 'ujian') {
+                wrapperDurasi.classList.remove('hidden');
+            } else {
+                wrapperDurasi.classList.add('hidden');
+            }
+        });
+
+        function updateKurikulumDanMapel() {
+            const jenjang = document.getElementById("selectJenjang").value;
+            state.jenjang = jenjang;
+            
+            const selectKur = document.getElementById("selectKurikulum");
+            selectKur.innerHTML = "";
+            const kurls = Object.keys(dbMapel[jenjang]);
+            kurls.forEach(k => {
+                let opt = document.createElement("option");
+                opt.value = k;
+                opt.textContent = k;
+                selectKur.appendChild(opt);
+            });
+
+            updateMapelOptions();
+        }
+
+        document.getElementById("selectKurikulum").addEventListener("change", updateMapelOptions);
+        function updateMapelOptions() {
+            const jenjang = document.getElementById("selectJenjang").value;
+            const kur = document.getElementById("selectKurikulum").value || Object.keys(dbMapel[jenjang])[0];
+            const selectMapel = document.getElementById("selectMapel");
+            selectMapel.innerHTML = "";
+            
+            const mapels = dbMapel[jenjang][kur] || [];
+            mapels.forEach(m => {
+                let opt = document.createElement("option");
+                opt.value = m;
+                opt.textContent = m;
+                selectMapel.appendChild(opt);
+            });
+        }
+
+        // Validasi dan Mulai Sesi
+        function mulaiSesi() {
+            const namaInput = document.getElementById("inputNama").value.trim();
+            const namaError = document.getElementById("namaError");
+
+            if(!namaInput) {
+                namaError.style.display = "block";
+                document.getElementById("inputNama").focus();
+                return;
+            }
+            namaError.style.display = "none";
+
+            if(state.sesiSudahGenerate) {
+                if(!confirm("Sesi kuis sedang berjalan. Apakah Anda ingin mengulang/generate soal baru?")) {
+                    return;
+                }
+            }
+
+            eksekusiMulaiSesi();
+        }
+
+        function eksekusiMulaiSesi() {
+            state.nama = document.getElementById("inputNama").value.trim();
+            state.jenjang = document.getElementById("selectJenjang").value;
+            state.kurikulum = document.getElementById("selectKurikulum").value;
+            state.mapel = document.getElementById("selectMapel").value;
+            state.metode = document.getElementById("selectMetode").value;
+            state.durasi = state.metode === 'ujian' ? (parseInt(document.getElementById("inputDurasi").value) || 30) : 0;
+            state.jumlahSoal = parseInt(document.getElementById("inputJumlahSoal").value) || 5;
+            state.kesulitan = document.getElementById("selectKesulitan").value;
+
+            generateSoalBank();
+
+            state.currentSoalIndex = 0;
+            state.jawabanUser = {};
+            state.sesiSudahGenerate = true;
+
+            document.getElementById("viewSetup").classList.add("hidden");
+            document.getElementById("viewQuiz").classList.remove("hidden");
+            document.getElementById("headerUserBadge").classList.remove("hidden");
+            document.getElementById("displayName").textContent = state.nama;
+
+            document.getElementById("quizTitle").textContent = `${state.mapel} (${state.jenjang})`;
+            document.getElementById("infoJenjang").textContent = state.jenjang;
+            document.getElementById("infoKurikulum").textContent = state.kurikulum;
+            document.getElementById("infoKesulitan").textContent = state.kesulitan.toUpperCase();
+            document.getElementById("badgeKesulitan").textContent = state.kesulitan.toUpperCase();
+
+            if(state.metode === 'ujian') {
+                document.getElementById("timerBox").classList.remove("hidden");
+                mulaiTimer(state.durasi * 60);
+            } else {
+                document.getElementById("timerBox").classList.add("hidden");
+            }
+
+            renderSoal();
+        }
+
+        // Generator Soal dengan Perbaikan Ilustrasi Gambar Berkualitas Tinggi (SVG Dinamis & Jelas)
+        function generateSoalBank() {
+            state.soalList = [];
+            
+            const svgCollection = [
+                {
+                    caption: "Ilustrasi 1: Skema Analisis Data & Grafik Pertumbuhan",
+                    svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='500' height='240' viewBox='0 0 500 240'><rect width='100%' height='100%' fill='%23ffffff'/><rect width='100%' height='100%' fill='none' stroke='%23cbd5e1' stroke-width='2'/><path d='M50 200 L450 200' stroke='%2364748b' stroke-width='2'/><path d='M50 40 L50 200' stroke='%2364748b' stroke-width='2'/><rect x='80' y='120' width='50' height='80' fill='%232563eb' rx='4'/><rect x='160' y='80' width='50' height='120' fill='%2316a34a' rx='4'/><rect x='240' y='140' width='50' height='60' fill='%23d97706' rx='4'/><rect x='320' y='50' width='50' height='150' fill='%23dc2626' rx='4'/><text x='105' y='218' font-family='Arial' font-size='12' fill='%23334155' text-anchor='middle'>Kategori A</text><text x='185' y='218' font-family='Arial' font-size='12' fill='%23334155' text-anchor='middle'>Kategori B</text><text x='265' y='218' font-family='Arial' font-size='12' fill='%23334155' text-anchor='middle'>Kategori C</text><text x='345' y='218' font-family='Arial' font-size='12' fill='%23334155' text-anchor='middle'>Kategori D</text></svg>"
+                },
+                {
+                    caption: "Ilustrasi 2: Diagram Konseptual Hubungan Sebab-Akibat",
+                    svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='500' height='240' viewBox='0 0 500 240'><rect width='100%' height='100%' fill='%23ffffff'/><rect width='100%' height='100%' fill='none' stroke='%23cbd5e1' stroke-width='2'/><circle cx='130' cy='120' r='55' fill='%23eff6ff' stroke='%232563eb' stroke-width='3'/><text x='130' y='115' font-family='Arial' font-size='13' font-weight='bold' fill='%231e3a8a' text-anchor='middle'>Variabel X</text><text x='130' y='135' font-family='Arial' font-size='11' fill='%2364748b' text-anchor='middle'>(Sebab)</text><line x1='185' y1='120' x2='315' y2='120' stroke='%23d97706' stroke-width='4'/><circle cx='370' cy='120' r='55' fill='%23fef3c7' stroke='%23d97706' stroke-width='3'/><text x='370' y='115' font-family='Arial' font-size='13' font-weight='bold' fill='%23b45309' text-anchor='middle'>Variabel Y</text><text x='370' y='135' font-family='Arial' font-size='11' fill='%2364748b' text-anchor='middle'>(Akibat)</text></svg>"
+                },
+                {
+                    caption: "Ilustrasi 3: Model Struktur Geometri & Spasial",
+                    svg: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='500' height='240' viewBox='0 0 500 240'><rect width='100%' height='100%' fill='%23ffffff'/><rect width='100%' height='100%' fill='none' stroke='%23cbd5e1' stroke-width='2'/><polygon points='250,30 400,190 100,190' fill='%23fef2f2' stroke='%23dc2626' stroke-width='3'/><circle cx='250' cy='30' r='6' fill='%231e293b'/><circle cx='400' cy='190' r='6' fill='%231e293b'/><circle cx='100' cy='190' r='6' fill='%231e293b'/><text x='250' y='20' font-family='Arial' font-size='13' font-weight='bold' fill='%23dc2626' text-anchor='middle'>Titik Puncak (P)</text><text x='250' y='120' font-family='Arial' font-size='14' font-weight='bold' fill='%231e3a8a' text-anchor='middle'>Area Analisis</text></svg>"
+                }
+            ];
+
+            for(let i=1; i<=state.jumlahSoal; i++) {
+                let illustration = svgCollection[(i - 1) % svgCollection.length];
+                state.soalList.push({
+                    id: i,
+                    pertanyaan: `Berdasarkan pengamatan pada ilustrasi gambar ${state.mapel} jenjang ${state.jenjang} (${state.kurikulum}) dengan tingkat kesulitan ${state.kesulitan} di atas, manakah kesimpulan analisis yang paling akurat?`,
+                    gambar: illustration.svg,
+                    keteranganGambar: illustration.caption,
+                    opsi: [
+                        `Pilihan A: Validasi teoretis yang sesuai dengan standar kompetensi ${state.mapel}.`,
+                        `Pilihan B: Pendekatan alternatif berdasarkan kerangka kerja kurikulum ${state.kurikulum}.`,
+                        `Pilihan C: Rumusan empiris umum yang berlaku pada fase pembelajaran ${state.jenjang}.`,
+                        `Pilihan D: Asumsi keliru yang sering disalahartikan dalam studi kasus ini.`
+                    ],
+                    kunci: 0,
+                    pembahasan: `Pembahasan Soal ${i}: Berdasarkan materi ${state.mapel} jenjang ${state.jenjang}, jawaban yang benar adalah Pilihan A karena merujuk secara langsung pada indikator pencapaian kompetensi esensial kurikulum berjalan.`
+                });
+            }
+        }
+
+        function renderSoal() {
+            const idx = state.currentSoalIndex;
+            const soal = state.soalList[idx];
+
+            document.getElementById("questionCounter").textContent = `Soal ke-${idx + 1} dari ${state.soalList.length}`;
+            document.getElementById("questionImage").src = soal.gambar;
+            document.getElementById("imageCaption").textContent = soal.keteranganGambar;
+            document.getElementById("questionText").textContent = soal.pertanyaan;
+
+            const optList = document.getElementById("optionsList");
+            optList.innerHTML = "";
+
+            soal.opsi.forEach((opsiText, oIdx) => {
+                let checked = state.jawabanUser[idx] === oIdx ? "checked" : "";
+                let item = document.createElement("label");
+                item.className = "option-item";
+                item.innerHTML = `
+                    <input type="radio" name="jawaban" value="${oIdx}" ${checked} onclick="pilihJawaban(${idx}, ${oIdx})">
+                    <span>${opsiText}</span>
+                `;
+                optList.appendChild(item);
+            });
+
+            document.getElementById("btnPrev").style.display = idx === 0 ? "none" : "inline-flex";
+            const btnNext = document.getElementById("btnNext");
+            if(idx === state.soalList.length - 1) {
+                btnNext.textContent = "Selesaikan Ujian 🏁";
+                btnNext.className = "btn btn-success";
+            } else {
+                btnNext.textContent = "Selanjutnya ➡️";
+                btnNext.className = "btn";
+            }
+
+            renderMiniPalette();
+        }
+
+        function pilihJawaban(soalIdx, optIdx) {
+            state.jawabanUser[soalIdx] = optIdx;
+            renderMiniPalette();
+        }
+
+        function renderMiniPalette() {
+            const container = document.getElementById("paletteMiniContainer");
+            container.innerHTML = "";
+            state.soalList.forEach((s, idx) => {
+                let btn = document.createElement("button");
+                btn.className = "palette-btn";
+                if(state.jawabanUser[idx] !== undefined) btn.classList.add("answered");
+                if(idx === state.currentSoalIndex) btn.classList.add("current");
+                btn.textContent = idx + 1;
+                btn.onclick = () => {
+                    state.currentSoalIndex = idx;
+                    renderSoal();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function navigasiSoal(direction) {
+            const newIndex = state.currentSoalIndex + direction;
+            if(newIndex >= 0 && newIndex < state.soalList.length) {
+                state.currentSoalIndex = newIndex;
+                renderSoal();
+            } else if(newIndex >= state.soalList.length) {
+                cekSoalBelumDijawab();
+            }
+        }
+
+        function cekSoalBelumDijawab() {
+            let belumTerjawab = [];
+            for(let i=0; i<state.soalList.length; i++) {
+                if(state.jawabanUser[i] === undefined) {
+                    belumTerjawab.push(i + 1);
+                }
+            }
+
+            if(belumTerjawab.length > 0) {
+                alert(`⚠️ Perhatian! Masih ada soal yang belum dijawab: Soal nomor [${belumTerjawab.join(", ")}]. Silakan lengkapi terlebih dahulu.`);
+                state.currentSoalIndex = belumTerjawab[0] - 1;
+                renderSoal();
+            } else {
+                if(confirm("Apakah Anda yakin ingin menyelesaikan ujian dan mengirimkan jawaban?")) {
+                    selesaiUjian();
+                }
+            }
+        }
+
+        function mulaiTimer(durasiDetik) {
+            state.sisaWaktu = durasiDetik;
+            if(state.timerInterval) clearInterval(state.timerInterval);
+
+            state.timerInterval = setInterval(() => {
+                state.sisaWaktu--;
+                let m = Math.floor(state.sisaWaktu / 60);
+                let s = state.sisaWaktu % 60;
+                document.getElementById("countdown").textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+
+                if(state.sisaWaktu <= 0) {
+                    clearInterval(state.timerInterval);
+                    alert("⏰ Waktu ujian telah habis! Sistem akan otomatis mengirimkan jawaban Anda.");
+                    selesaiUjian();
+                }
+            }, 1000);
+        }
+
+        async function selesaiUjian() {
+            if(state.timerInterval) clearInterval(state.timerInterval);
+
+            let benar = 0;
+            let total = state.soalList.length;
+            state.soalList.forEach((s, idx) => {
+                if(state.jawabanUser[idx] === s.kunci) {
+                    benar++;
+                }
+            });
+
+            let skorAkhir = Math.round((benar / total) * 100);
+
+            let record = {
+                nama: state.nama,
+                jenjangMapel: `${state.jenjang} - ${state.mapel}`,
+                metode: state.metode === 'ujian' ? 'Ujian Resmi' : 'Latihan Mandiri',
+                skor: skorAkhir,
+                waktu: new Date().toLocaleString('id-ID')
+            };
+
+            try {
+                if(WEB_APP_URL && !WEB_APP_URL.includes("AKfycbw...")) {
+                    await fetch(WEB_APP_URL, {
+                        method: "POST",
+                        body: JSON.stringify({
+                            action: "saveRiwayat",
+                            nama: record.nama,
+                            jenjangMapel: record.jenjangMapel,
+                            metode: record.metode,
+                            skor: record.skor,
+                            waktu: record.waktu
+                        })
+                    });
+                }
+            } catch(err) {
+                console.error("Gagal mengirim riwayat ke Google Sheets:", err);
+            }
+
+            document.getElementById("viewQuiz").classList.add("hidden");
+            document.getElementById("viewResult").classList.remove("hidden");
+
+            document.getElementById("resNama").textContent = `Peserta: ${state.nama}`;
+            document.getElementById("resInfo").textContent = `${state.jenjang} | ${state.kurikulum} | ${state.mapel}`;
+            document.getElementById("resScore").textContent = skorAkhir;
+
+            const resStatus = document.getElementById("resStatus");
+            if(skorAkhir >= 75) {
+                resStatus.textContent = "🎉 LUAR BIASA! Anda Lulus dengan Predikat Sangat Memuaskan.";
+                resStatus.style.color = "var(--success)";
+            } else {
+                resStatus.textContent = "📈 Cukup Baik. Terus tingkatkan pemahaman melalui pembahasan soal di bawah.";
+                resStatus.style.color = "var(--warning)";
+            }
+
+            const reviewContainer = document.getElementById("reviewContainer");
+            reviewContainer.innerHTML = "";
+
+            state.soalList.forEach((s, idx) => {
+                let userAns = state.jawabanUser[idx];
+                let isCorrect = userAns === s.kunci;
+                let div = document.createElement("div");
+                div.className = `explanation-card ${isCorrect ? '' : 'incorrect'}`;
+                
+                let userAnsText = userAns !== undefined ? s.opsi[userAns] : "Tidak dijawab";
+                let kunciText = s.opsi[s.kunci];
+
+                div.innerHTML = `
+                    <p><strong>Soal ${idx + 1}:</strong> ${s.pertanyaan}</p>
+                    <p style="margin-top: 0.5rem; color: ${isCorrect ? 'var(--success)' : 'var(--danger)'};">
+                        <strong>Jawaban Anda:</strong> ${userAnsText} ${isCorrect ? '✅ (Benar)' : '❌ (Salah)'}
+                    </p>
+                    ${!isCorrect ? `<p style="margin-top: 0.25rem; color: var(--success);"><strong>Kunci Jawaban Benar:</strong> ${kunciText}</p>` : ''}
+                    <p style="margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px dashed #cbd5e1;"><strong>🔍 Penjelasan / Pembahasan:</strong> ${s.pembahasan}</p>
+                `;
+                reviewContainer.appendChild(div);
+            });
+        }
+
+        function kembaliKeMenuUtama() {
+            document.getElementById("viewResult").classList.add("hidden");
+            document.getElementById("viewSetup").classList.remove("hidden");
+            document.getElementById("headerUserBadge").classList.add("hidden");
+            document.getElementById("inputNama").value = "";
+            state.sesiSudahGenerate = false;
+        }
+    </script>
+</body>
+</html>
